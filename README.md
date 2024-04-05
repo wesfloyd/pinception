@@ -1,7 +1,7 @@
 # Pinception
 Decentralized IPFS Pinning Service AVS
-![inception movie](https://github.com/wesfloyd/pinception/assets/260568/fb6c8685-888b-450d-842b-9060a7fd0ace)
 
+<img src="https://github.com/wesfloyd/pinception/assets/260568/fb6c8685-888b-450d-842b-9060a7fd0ace" alt="pinception" width="400"/>
 
 
 ## Goals
