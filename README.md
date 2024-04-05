@@ -38,7 +38,9 @@ Ideas:
 
 # Roadmap
 
-- Build a draft AVS offline service in JS that listens for an event (NewDataSubmission) and pins the associated CID
-- Setup a local [Foundry Anvil](https://book.getfoundry.sh/anvil/) test script that emits the event to trigger the CID download.
+- Build a draft AVS offline service in Javascript that listens for an event (NewDataSubmission) and pins the associated CID
+- Test: setup a local [Foundry Anvil](https://book.getfoundry.sh/anvil/) test script that emits the event to trigger the CID download.
 - Build EigenLayer AVS contracts to register Operators, register the AVS and custom AVS contracts to manage the state of pinned CIDs & their Operators.
-- [todo]
+- Test: modify test scripts to automate registration and and validate new contracts.
+- Build & Test Story 2.
+- Build & Test Story 3. 
