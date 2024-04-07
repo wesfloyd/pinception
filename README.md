@@ -36,6 +36,44 @@ Ideas:
 - Build the backend AVS code in Javascript in order to appeal to the largest audience possible.
 - Reuse existing IPFS bits where possible ([example](https://github.com/ipfs/kubo?tab=readme-ov-file#docker)).
 
+## Proposed Simplified Design
+This system provides a decentralized solution for IPFS pinning and ensures that node operators are genuinely hosting the pinned files. It utilizes smart contracts, Merkle trees, and a verification process to prove the availability and integrity of the data.
+
+### Diagram
+<img width="847" alt="Screenshot 2024-04-05 at 4 29 47 PM" src="https://github.com/wesfloyd/pinception/assets/1938013/ac89fc78-7660-4fb3-a7ef-6fb5e712ea34">
+
+
+### Pinning a File
+- A user pins a file by providing the following information to a smart contract:
+`CID`: The IPFS hash of the file.
+`Merkle Root`: The Merkle root of the file, split into chunks, with each chunk hashed against the signer's public key.
+`Payment`: A fee for the pinning service.
+
+- The smart contract emits an event containing this data, making it available for the AVS (Availability Verification System) network to index.
+
+### Committee Verification
+- A randomly chosen committee verifies the file's availability to prevent griefing attacks.
+- The committee pulls the file, splits it into chunks, hashes each chunk with the pinner's public key, creates a Merkle tree, and compares the root with the one provided by the pinner.
+- Each committee member then hashes the chunks with their own unique public key, creates a Merkle tree, and puts a signed message on-chain with their unique Merkle root.
+This allows anyone with access to the file (specifically the original pinner) to verify that the AVS network has successfully reached and replicated the file and verified its contents.
+
+### Proof of Storage
+- At intervals, the network randomly chooses a subset of the AVS network participants to prove they are hosting the data.
+- The selected participants are asked to provide a Merkle root of a tree of chunks from multiple randomly selected files.
+- For each file, a random chunk is requested. The node operator collects the randomly selected chunks, hashes each chunk with their public key, creates a Merkle trie, and posts the Merkle root on-chain.
+- Other participants can verify the correctness of the posted Merkle root by performing the calculation themselves and comparing it with the original files' Merkle roots when published on-chain by the pinners.
+- If the Merkle root is incorrect, it can be proven on-chain by working backwards from the original files' Merkle roots and comparing the chunks.
+
+### File Retrieval
+- The process of requesting a file should also include the proving system.(maybe?) 
+- This ensures that the node operators are genuinely hosting the data and not just pulling it from other nodes at the time of request.
+
+### Benefits
+- Ensures the availability and integrity of pinned files in a decentralized manner.
+- Prevents node operators from cheating by merely pulling files from other nodes at the time of request.
+- Utilizes Merkle trees and proofs of storage to make it impractical for node operators to cheat.
+- Provides a verification mechanism that allows anyone to validate the availability and correctness of the pinned files.
+
 # Roadmap
 
 - Build a draft AVS offline service in Javascript that listens for an event (NewDataSubmission) and pins the associated CID
