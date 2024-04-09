@@ -1,0 +1,29 @@
+{
+  "name": "pinception-operator",
+  "version": "1.0.0",
+  "description": "Operator binary to run Pinception AVS",
+  "main": "run-ipfs-server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wesfloyd/pinception.git"
+  },
+  "keywords": [
+    "eigenlayer",
+    "avs",
+    "ipfs"
+  ],
+  "author": "@wesfloyd, @crazyrabbitLTC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wesfloyd/pinception/issues"
+  },
+  "homepage": "https://github.com/wesfloyd/pinception#readme",
+  "dependencies": {
+    "daemon": "^1.1.0",
+    "express": "^4.19.2",
+    "node-fetch": "^3.3.2"
+  }
+}

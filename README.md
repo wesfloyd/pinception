@@ -82,3 +82,16 @@ This allows anyone with access to the file (specifically the original pinner) to
 - Test: modify test scripts to automate registration and and validate new contracts.
 - Build & Test Story 2.
 - Build & Test Story 3. 
+
+
+# Demo Setup
+
+1. Install IPFS Kubo binaries locally on your machine
+- https://github.com/ipfs/kubo?tab=readme-ov-file#official-prebuilt-binaries
+- https://github.com/ipfs/kubo?tab=readme-ov-file#homebrew
+
+2. Init your ipfs server
+`ipfs init`
+
+3. Run
+`node run-ipfs-server.js`
