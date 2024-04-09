@@ -76,8 +76,9 @@ This allows anyone with access to the file (specifically the original pinner) to
 
 # Roadmap
 
-- Build a draft AVS offline service in Javascript that listens for an event (NewDataSubmission) and pins the associated CID
+- Build a draft offline service in Javascript that listens for an on chain event (NewDataSubmission) and pins the associated CID.
 - Test: setup a local [Foundry Anvil](https://book.getfoundry.sh/anvil/) test script that emits the event to trigger the CID download.
+- Orchestrate the IPFS daemon and run-ipfs-server JS backend to launch via docker compose (initially, then k8s).
 - Build EigenLayer AVS contracts to register Operators, register the AVS and custom AVS contracts to manage the state of pinned CIDs & their Operators.
 - Test: modify test scripts to automate registration and and validate new contracts.
 - Build & Test Story 2.
@@ -90,8 +91,10 @@ This allows anyone with access to the file (specifically the original pinner) to
 - https://github.com/ipfs/kubo?tab=readme-ov-file#official-prebuilt-binaries
 - https://github.com/ipfs/kubo?tab=readme-ov-file#homebrew
 
-2. Init your ipfs server
+2. Init and start your ipfs server
 `ipfs init`
+`ipfs daemon`
 
-3. Run
+3. Open a new terminal window, run
 `node run-ipfs-server.js`
+
