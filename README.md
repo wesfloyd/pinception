@@ -1,8 +1,7 @@
 # Pinception
-Decentralized IPFS Pinning Service AVS
-
 <img src="https://github.com/wesfloyd/pinception/assets/260568/fb6c8685-888b-450d-842b-9060a7fd0ace" alt="pinception" width="400"/>
-
+Pinception is a Decentralized IPFS Pinning Service AVS.
+Telegram group [here](https://t.me/+IZGuHJNzOQQwZDRh).
 
 ## Goals
 To build an AVS in the open, via community, that enables crypto incentivized IPFS Pinning as an AVS on [EigenLayer](https://docs.eigenlayer.xyz/eigenlayer/overview). Background [here](https://x.com/DennisonBertram/status/1772621874192584962).
@@ -76,9 +75,34 @@ This allows anyone with access to the file (specifically the original pinner) to
 
 # Roadmap
 
-- Build a draft AVS offline service in Javascript that listens for an event (NewDataSubmission) and pins the associated CID
+- Build a draft offline service in Javascript that listens for an on chain event (NewDataSubmission) and pins the associated CID.
 - Test: setup a local [Foundry Anvil](https://book.getfoundry.sh/anvil/) test script that emits the event to trigger the CID download.
+- Orchestrate the IPFS daemon and run-ipfs-server JS backend to launch via docker compose (initially, then k8s).
 - Build EigenLayer AVS contracts to register Operators, register the AVS and custom AVS contracts to manage the state of pinned CIDs & their Operators.
 - Test: modify test scripts to automate registration and and validate new contracts.
 - Build & Test Story 2.
 - Build & Test Story 3. 
+
+
+
+
+# Demo Setup for IPFS Daemon Method
+
+1. Install IPFS Kubo binaries locally on your machine
+- https://github.com/ipfs/kubo?tab=readme-ov-file#official-prebuilt-binaries
+- https://github.com/ipfs/kubo?tab=readme-ov-file#homebrew
+
+2. Init and start your ipfs server
+`ipfs init`
+`ipfs daemon`
+*in the future this daemon will be orchestrated to run via docker-compose, k8s, otherwise*
+
+3. Open a new terminal window, run
+`node pinner-ipfsd.js`
+
+
+# Demo Setup for IPFS Daemon Method (on hold)
+
+1. `node pinner-helia.js'
+
+*todo find out how active helia community is and whether it will be actively maintained going forward. until then, the IPFS Daemon approach is more promising*

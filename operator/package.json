@@ -1,0 +1,37 @@
+{
+  "name": "pinception-operator",
+  "version": "1.0.0",
+  "description": "Operator binary to run Pinception AVS",
+  "type": "module",
+  "main": "pinner-helia.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wesfloyd/pinception.git"
+  },
+  "keywords": [
+    "eigenlayer",
+    "avs",
+    "ipfs"
+  ],
+  "author": "@wesfloyd, @crazyrabbitLTC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wesfloyd/pinception/issues"
+  },
+  "homepage": "https://github.com/wesfloyd/pinception#readme",
+  "dependencies": {
+    "@helia/unixfs": "^3.0.3",
+    "@libp2p/identify": "^1.0.17",
+    "blockstore-core": "^4.4.1",
+    "commander": "^12.0.0",
+    "daemon": "^1.1.0",
+    "express": "^4.19.2",
+    "helia": "^4.1.0",
+    "libp2p": "^1.3.3",
+    "node-fetch": "^3.3.2",
+    "ora": "^8.0.1"
+  }
+}
