@@ -1,18 +1,42 @@
-
-//- Build a draft offline service in Javascript that listens for an on chain event (NewDataSubmission) and pins the associated CID.
-/** Short term planning:
- * build a program that inovkes the local IPFS server instance
- * modify the program to get status from local IPFS server instance
- * modify to add and pin IPFS file locally
- * write test functions
- */
-
-// - Test: setup a local [Foundry Anvil](https://book.getfoundry.sh/anvil/) test script that emits the event to trigger the CID download.
 /**
- * Modify run script to launch anvil chain
- * load simple contract to the chain that emits the new file name event
- * 
+ * Pinner using local IPFS daemon
  */
+
+
+async function listenForNewCIDTask(){
+  const Web3 = require('web3');
+  const web3 = new Web3('https://mainnet.infura.io/v3/YOUR-PROJECT-ID');
+
+  // Replace with the ABI (Application Binary Interface) of your smart contract
+  const contractABI = [
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_task",
+          "type": "string"
+        }
+      ],
+      "name": "newTask",
+      "type": "event"
+    },
+    // Other contract functions and events
+  ];
+
+  // Replace with the contract address of your smart contract
+  const contractAddress = '0x1234567890123456789012345678901234567890';
+
+  const contract = new web3.eth.Contract(contractABI, contractAddress);
+
+  // Listen for the 'newTask' event
+  contract.events.newTask({}, (error, event) => {
+    if (error) {
+      console.error('Error:', error);
+    } else {
+      console.log('New task created:', event.returnValues._task);
+    }
+  });
+}
 
 
 

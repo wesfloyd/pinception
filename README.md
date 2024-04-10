@@ -85,7 +85,25 @@ This allows anyone with access to the file (specifically the original pinner) to
 - Build & Test Story 3. 
 
 
-# Demo Setup
+# Demo Setup for IPFS Daemon Method
+
+1. `node pinner-helia.js'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Demo Setup for IPFS Daemon Method (deprecated)
 
 1. Install IPFS Kubo binaries locally on your machine
 - https://github.com/ipfs/kubo?tab=readme-ov-file#official-prebuilt-binaries
@@ -96,5 +114,5 @@ This allows anyone with access to the file (specifically the original pinner) to
 `ipfs daemon`
 
 3. Open a new terminal window, run
-`node run-ipfs-server.js`
+`node pinner-ipfsd.js`
 
