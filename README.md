@@ -89,15 +89,7 @@ This allows anyone with access to the file (specifically the original pinner) to
 
 1. `node pinner-helia.js'
 
-
-
-
-
-
-
-
-
-
+*todo find out how active helia community is and whether it will be actively maintained going forward*
 
 
 
