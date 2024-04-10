@@ -1,8 +1,7 @@
 # Pinception
-Decentralized IPFS Pinning Service AVS
-
 <img src="https://github.com/wesfloyd/pinception/assets/260568/fb6c8685-888b-450d-842b-9060a7fd0ace" alt="pinception" width="400"/>
-
+Pinception is a Decentralized IPFS Pinning Service AVS.
+Telegram group [here](https://t.me/+IZGuHJNzOQQwZDRh).
 
 ## Goals
 To build an AVS in the open, via community, that enables crypto incentivized IPFS Pinning as an AVS on [EigenLayer](https://docs.eigenlayer.xyz/eigenlayer/overview). Background [here](https://x.com/DennisonBertram/status/1772621874192584962).
