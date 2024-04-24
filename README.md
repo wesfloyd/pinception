@@ -5,10 +5,10 @@
 </p>
 
 <h1 align="center">Pinception</h1>
-<h3 align="center">Decentralized [IPFS](ipfs.tech) Pinning Service Built on [EigenLayer](https://www.eigenlayer.xyz/)</h2>
+<h3 align="center">Decentralized IPFS Pinning Service Built on EigenLayer</h2>
 
 # Project Goals
-- Build an AVS in the open, via community, that enables crypto incentivized IPFS Pinning as a service (AVS) on [EigenLayer](https://docs.eigenlayer.xyz/eigenlayer/overview). 
+- Build an AVS in the open, via community, that enables decentralized, crypto incentivized "[IPFS](ipfs.tech) Pinning as a Service" (AVS) on [EigenLayer](https://docs.eigenlayer.xyz/eigenlayer/overview). 
 - Background and inspiration [here](https://x.com/DennisonBertram/status/1772621874192584962).
 - Interested in following our progress? - join the Telegram group [here](https://t.me/+IZGuHJNzOQQwZDRh).
 
