@@ -1,8 +1,8 @@
 # Pinception
 <img src="https://github.com/wesfloyd/pinception/assets/260568/fb6c8685-888b-450d-842b-9060a7fd0ace" alt="pinception" width="400"/>  
  
-Pinception is a Decentralized IPFS Pinning Service AVS.
-Telegram group [here](https://t.me/+IZGuHJNzOQQwZDRh).
+- Pinception is a decentralized IPFS pinning service built as an [AVS on EigenLayer](https://docs.eigenlayer.xyz/eigenlayer/overview/). 
+- Interested in following our progress? - join the Telegram group [here](https://t.me/+IZGuHJNzOQQwZDRh).
 
 ## Goals
 To build an AVS in the open, via community, that enables crypto incentivized IPFS Pinning as an AVS on [EigenLayer](https://docs.eigenlayer.xyz/eigenlayer/overview). Background [here](https://x.com/DennisonBertram/status/1772621874192584962).
@@ -75,16 +75,7 @@ This allows anyone with access to the file (specifically the original pinner) to
 - Provides a verification mechanism that allows anyone to validate the availability and correctness of the pinned files.
 
 # Roadmap
-
-- Build a draft offline service in Javascript that listens for an on chain event (NewDataSubmission) and pins the associated CID.
-- Test: setup a local [Foundry Anvil](https://book.getfoundry.sh/anvil/) test script that emits the event to trigger the CID download.
-- Orchestrate the IPFS daemon and run-ipfs-server JS backend to launch via docker compose (initially, then k8s).
-- Build EigenLayer AVS contracts to register Operators, register the AVS and custom AVS contracts to manage the state of pinned CIDs & their Operators.
-- Test: modify test scripts to automate registration and and validate new contracts.
-- Build & Test Story 2.
-- Build & Test Story 3. 
-
-
+See Issues for ongoing sprint tracking.
 
 
 # Demo Setup for IPFS Daemon Method
@@ -98,9 +89,17 @@ This allows anyone with access to the file (specifically the original pinner) to
 `ipfs daemon`
 *in the future this daemon will be orchestrated to run via docker-compose, k8s, otherwise*
 
-3. Open a new terminal window, run
+3. Pin a file on a remote IPFS server
+Use any service you like. For example, I use google cloud console running the following commands:
+```
+ipfs daemon
+echo "Hello, IPFS! $(date +%s%N)" | ipfs add --pin=true
+```
+
+5. Open a new terminal window, run
 `node pinner-ipfsd.js`
+For now - simply modify the source file directly to hardcode the added ipfs hash.
 
 
-# Demo Setup for IPFS Helia (on hold)
-Holding off on this approach for now b/c: Helia is better suited for getting data vs pinning.
+
+
