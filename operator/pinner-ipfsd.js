@@ -1,6 +1,80 @@
 /**
- * Pinner using local IPFS daemon
+ * Pinning service using local IPFS daemon
  */
+import fetch from 'node-fetch'
+
+
+async function checkIPFSDaemonAvailable(){
+
+  // Check the IPFS server status
+  const apiUrl = 'http://127.0.0.1:5001/api/v0/id';
+
+  // Test fetching data from the API
+  fetch(apiUrl, {
+    method: 'POST'
+  })
+    .then(response => {
+      // Check if the response is successful
+      if (response.ok) {
+        // Parse the response as JSON
+        // return response.json();
+        console.log("Local IPFS daemon is running.");
+      } else {
+        // Throw an error if the response is not successful
+        throw new Error('Failed to fetch data. \n Response status: ' + response.status + ' ' + response.statusText);
+      }
+    })
+    .then(data => {
+      // Handle the parsed JSON data
+      console.log(data);
+      // You can perform any further operations with the data here
+    })
+    .catch(error => {
+      // Handle any errors that occurred during the fetch operation
+      console.error('Error:', error);
+    });
+}
+
+
+async function testAddLocalFile(){
+  
+    
+  try {
+    
+    
+    // URL of the API endpoint
+
+    // Relative path to the image file
+    const imagePath = '../assets/pinception.png';
+
+    // Create a new File object from the image file
+    const imageFile = new File([/* file contents */], 'image.png', {
+      type: 'image/png',
+      lastModified: new Date().getTime()
+    });
+
+    // Create a FormData object to hold the file
+    const formData = new FormData();
+    formData.append('file', getFileToBePinned);
+
+    // Make the POST request to the IPFS API
+    fetch('/api/v0/add', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      // The response from the IPFS API will contain the hash of the added file
+      console.log('IPFS hash:', data.Hash);
+    })
+   
+
+  } catch (error) {
+    console.log(error);
+  }
+  
+}
+
 
 
 async function listenForNewCIDTask(){
@@ -40,65 +114,17 @@ async function listenForNewCIDTask(){
 
 
 
-
 async function main() {
 
-  // Check the IPFS server status
+  // Kubo API reference: ipns://docs.ipfs.tech/reference/kubo/rpc/#getting-started
+
+  checkIPFSDaemonAvailable();
   
-  try {
-    // Kubo API: ipns://docs.ipfs.tech/reference/kubo/rpc/#getting-started
-    
-    const responseID = await fetch('http://127.0.0.1:5001/api/v0/id',{
-      method: "POST"
-    })
-    json = await response.json()
-    console.log(json); 
+  const testHash = "";
+  addIPFSHash(testHash);
+  //testAddLocalFile();
+  //listenForNewCIDTask
 
-
-    // Relative path to the image file
-    const imagePath = '../assets/pinception.png';
-
-    // Create a new File object from the image file
-    const imageFile = new File([/* file contents */], 'image.png', {
-      type: 'image/png',
-      lastModified: new Date().getTime()
-    });
-
-    // Create a FormData object to hold the file
-    const formData = new FormData();
-    formData.append('file', getFileToBePinned);
-
-    // Make the POST request to the IPFS API
-    fetch('/api/v0/add', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      // The response from the IPFS API will contain the hash of the added file
-      console.log('IPFS hash:', data.Hash);
-    })
-   
-
-
-
-
-  } catch (error) {
-    console.log(error);
-  }
-  
-
-  /**
-
-  if (json.status === 'completed') {
-    return res.json(json);
-  } else {
-
-    return res.json({
-      status: 'running'
-    });
-  }
-    */
 
 }
 main()
