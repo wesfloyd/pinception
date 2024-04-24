@@ -1,11 +1,16 @@
-# Pinception
-<img src="https://github.com/wesfloyd/pinception/assets/260568/fb6c8685-888b-450d-842b-9060a7fd0ace" alt="pinception" width="400"/>  
- 
-- Pinception is a decentralized IPFS pinning service built as an [AVS on EigenLayer](https://docs.eigenlayer.xyz/eigenlayer/overview/). 
-- Interested in following our progress? - join the Telegram group [here](https://t.me/+IZGuHJNzOQQwZDRh).
+<p align="center">
+  <a href="https://github.com/wesfloyd/pinception">
+    <img src="https://github.com/wesfloyd/pinception/assets/260568/fb6c8685-888b-450d-842b-9060a7fd0ace" alt="pinception" width="400"/>
+  </a>
+</p>
 
-## Goals
-To build an AVS in the open, via community, that enables crypto incentivized IPFS Pinning as an AVS on [EigenLayer](https://docs.eigenlayer.xyz/eigenlayer/overview). Background [here](https://x.com/DennisonBertram/status/1772621874192584962).
+<h1 align="center">Pinception</h1>
+<h3 align="center">Decentralized [IPFS](ipfs.tech) Pinning Service Built on [EigenLayer](https://www.eigenlayer.xyz/)</h2>
+
+# Project Goals
+- Build an AVS in the open, via community, that enables crypto incentivized IPFS Pinning as a service (AVS) on [EigenLayer](https://docs.eigenlayer.xyz/eigenlayer/overview). 
+- Background and inspiration [here](https://x.com/DennisonBertram/status/1772621874192584962).
+- Interested in following our progress? - join the Telegram group [here](https://t.me/+IZGuHJNzOQQwZDRh).
 
 # Design
 
