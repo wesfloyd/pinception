@@ -3,11 +3,13 @@
  */
 import fetch from 'node-fetch'
 
+// todo encapsulate this in a global module or namespace object
+const ipfsDaemonSocket = 'http://127.0.0.1:5001';
 
 async function checkIPFSDaemonAvailable(){
 
   // Check the IPFS server status
-  const apiUrl = 'http://127.0.0.1:5001/api/v0/id';
+  const apiUrl = ipfsDaemonSocket + '/api/v0/id';
 
   // Test fetching data from the API
   fetch(apiUrl, {
@@ -35,44 +37,21 @@ async function checkIPFSDaemonAvailable(){
     });
 }
 
-
-async function testAddLocalFile(){
-  
-    
+async function addIPFSHash(hash) {
   try {
     
-    
-    // URL of the API endpoint
-
-    // Relative path to the image file
-    const imagePath = '../assets/pinception.png';
-
-    // Create a new File object from the image file
-    const imageFile = new File([/* file contents */], 'image.png', {
-      type: 'image/png',
-      lastModified: new Date().getTime()
-    });
-
-    // Create a FormData object to hold the file
-    const formData = new FormData();
-    formData.append('file', getFileToBePinned);
 
     // Make the POST request to the IPFS API
-    fetch('/api/v0/add', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      // The response from the IPFS API will contain the hash of the added file
-      console.log('IPFS hash:', data.Hash);
-    })
-   
-
+    const response = await fetch(ipfsDaemonSocket + 
+        '/api/v0/pin/add?arg=' + hash, {
+      method: 'POST'
+    });
+    
+    // The response from the IPFS API will contain the hash of the added file
+    console.log('IPFS hash added:', await response.text());
   } catch (error) {
     console.log(error);
   }
-  
 }
 
 
@@ -117,13 +96,12 @@ async function listenForNewCIDTask(){
 async function main() {
 
   // Kubo API reference: ipns://docs.ipfs.tech/reference/kubo/rpc/#getting-started
-
   checkIPFSDaemonAvailable();
   
-  const testHash = "";
+  const testHash = "QmXuZ8Ge2FFoF5DWQUmwBDrdvCV3wCe9nToKRRAe2PVziQ";
   addIPFSHash(testHash);
-  //testAddLocalFile();
-  //listenForNewCIDTask
+
+  //listenForNewCIDTask();
 
 
 }
