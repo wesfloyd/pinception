@@ -1,5 +1,6 @@
 # Pinception
-<img src="https://github.com/wesfloyd/pinception/assets/260568/fb6c8685-888b-450d-842b-9060a7fd0ace" alt="pinception" width="400"/>
+<img src="https://github.com/wesfloyd/pinception/assets/260568/fb6c8685-888b-450d-842b-9060a7fd0ace" alt="pinception" width="400"/>  
+ 
 Pinception is a Decentralized IPFS Pinning Service AVS.
 Telegram group [here](https://t.me/+IZGuHJNzOQQwZDRh).
 
@@ -101,8 +102,5 @@ This allows anyone with access to the file (specifically the original pinner) to
 `node pinner-ipfsd.js`
 
 
-# Demo Setup for IPFS Daemon Method (on hold)
-
-1. `node pinner-helia.js'
-
-*todo find out how active helia community is and whether it will be actively maintained going forward. until then, the IPFS Daemon approach is more promising*
+# Demo Setup for IPFS Helia (on hold)
+Holding off on this approach for now b/c: Helia is better suited for getting data vs pinning.
