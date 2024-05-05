@@ -59,7 +59,6 @@ async function addIPFSHash(hash) {
 }
 
 
-
 async function listenForNewCIDTask(){
   const web3 = new Web3(process.env.RPC_URL);
 
@@ -71,45 +70,33 @@ async function listenForNewCIDTask(){
   const cidEmitterContractAddr = process.env.CID_EMITTER_CONTRACT_ADDR;
   const contract = new web3.eth.Contract(contractABI, cidEmitterContractAddr);
 
-  console.log('Listening for new CID tasks...');
-  async function listenForNewCIDTask(){
-    const web3 = new Web3(process.env.RPC_URL);
-    var jsonFile = "../contracts/out/CIDEmitter.sol/CIDEmitter.json";
-    var parsed = JSON.parse(fs.readFileSync(jsonFile));
-    var contractABI = parsed.abi;
-    // Replace with the contract address of your smart contract
-    const cidEmitterContractAddr = process.env.CID_EMITTER_CONTRACT_ADDR;
-    const contract = new web3.eth.Contract(contractABI, cidEmitterContractAddr);
-    
-    // Check if the contract object is defined
-    if (!contract) {
-      console.log('Contract object is undefined. Make sure the contract address and ABI are correct.');
-    } else {
-      // Listen for the 'CIDToPIN' event
-      contract.events.CIDToPIN({}, (error, event) => {
-        if (error) {
-          console.error('Error:', error);
-        } else {
-          console.log('New task created:', event.returnValues._task);
-        }
-      })
-      .on("connected", () => {
-        console.log("Connected to rpc provider at:" + process.env.RPC_URL);
-      })
-      .on("changed", (event) => {
-        console.log(event); 
-      })
-      .on('data', function(event){
-        console.log(event); 
-      })
-      .on("error", (error) => {
-          console.error("Event error:", error);
-      });
-    } 
-      
-    
-  }
+  console.log('Listening for new event CIDToPIN ...');
 
+  // Check if the contract object is defined
+  if (!contract) {
+    console.log('Contract object is undefined. Make sure the contract address and ABI are correct.');
+  } else {
+    // Listen for the 'CIDToPIN' event
+    contract.events.CIDToPIN({}, (error, event) => {
+      if (error) {
+        console.error('Error:', error);
+      } else {
+        console.log('New task created:', event.returnValues._task);
+      }
+    })
+    .on("connected", () => {
+      console.log("Connected to rpc provider at:" + process.env.RPC_URL);
+    })
+    .on("changed", (event) => {
+      console.log(event); 
+    })
+    .on('data', function(event){
+      console.log(event); 
+    })
+    .on("error", (error) => {
+        console.error("Event error:", error);
+    });
+  } 
 }
 
 
