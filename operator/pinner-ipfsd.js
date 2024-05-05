@@ -63,45 +63,66 @@ async function addIPFSHash(hash) {
 async function listenForNewCIDTask(){
   const web3 = new Web3(process.env.RPC_URL);
 
-  // Replace with the ABI (Application Binary Interface) of your smart contract
   var jsonFile = "../contracts/out/CIDEmitter.sol/CIDEmitter.json";
   var parsed = JSON.parse(fs.readFileSync(jsonFile));
   var contractABI = parsed.abi;
 
   // Replace with the contract address of your smart contract
   const cidEmitterContractAddr = process.env.CID_EMITTER_CONTRACT_ADDR;
-  const contract = new web3.eth.Contract(contractABI, contractAddress);
+  const contract = new web3.eth.Contract(contractABI, cidEmitterContractAddr);
 
-  // Listen for the 'newTask' event
-  contract.events.newTask({}, (error, event) => {
-    if (error) {
-      console.error('Error:', error);
+  console.log('Listening for new CID tasks...');
+  async function listenForNewCIDTask(){
+    const web3 = new Web3(process.env.RPC_URL);
+    var jsonFile = "../contracts/out/CIDEmitter.sol/CIDEmitter.json";
+    var parsed = JSON.parse(fs.readFileSync(jsonFile));
+    var contractABI = parsed.abi;
+    // Replace with the contract address of your smart contract
+    const cidEmitterContractAddr = process.env.CID_EMITTER_CONTRACT_ADDR;
+    const contract = new web3.eth.Contract(contractABI, cidEmitterContractAddr);
+    
+    // Check if the contract object is defined
+    if (!contract) {
+      console.log('Contract object is undefined. Make sure the contract address and ABI are correct.');
     } else {
-      console.log('New task created:', event.returnValues._task);
-      return event.returnValues._task;
-    }
-  });
+      // Listen for the 'CIDToPIN' event
+      contract.events.CIDToPIN({}, (error, event) => {
+        if (error) {
+          console.error('Error:', error);
+        } else {
+          console.log('New task created:', event.returnValues._task);
+        }
+      })
+      .on("connected", () => {
+        console.log("Connected to rpc provider at:" + process.env.RPC_URL);
+      })
+      .on("changed", (event) => {
+        console.log(event); 
+      })
+      .on('data', function(event){
+        console.log(event); 
+      })
+      .on("error", (error) => {
+          console.error("Event error:", error);
+      });
+    } 
+      
+    
+  }
 
-  return 'No new task found on chain';
 }
-
 
 
 async function main() {
   const myVariable = process.env.MY_VARIABLE;
 
   // Kubo API reference: ipns://docs.ipfs.tech/reference/kubo/rpc/#getting-started
-  checkIPFSDaemonAvailable();
+  //checkIPFSDaemonAvailable();
   
-  cidTask = listenForNewCIDTask();
-
-  console.log("SUCCESS: ready to pin cidTask value:" + cidTask);
+  listenForNewCIDTask();
 
   //const testHash = "QmXuZ8Ge2FFoF5DWQUmwBDrdvCV3wCe9nToKRRAe2PVziQ";
   //addIPFSHash(testHash);
-
-  
-
 
 }
 main()
