@@ -3,8 +3,8 @@
  */
 import fetch from 'node-fetch'
 import 'dotenv/config'
-import Web3 from 'web3';
-import fs from 'fs';
+import fs from 'fs'
+import { ethers } from "ethers";
 
 
 // todo encapsulate this in a global module or namespace object
@@ -59,44 +59,28 @@ async function addIPFSHash(hash) {
 }
 
 
-async function listenForNewCIDTask(){
-  const web3 = new Web3(process.env.RPC_URL);
+async function listenForNewCIDTask() {
 
-  var jsonFile = "../contracts/out/CIDEmitter.sol/CIDEmitter.json";
-  var parsed = JSON.parse(fs.readFileSync(jsonFile));
-  var contractABI = parsed.abi;
+  const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+  
+  //console.log ("Blocknumber" + await provider.getBlockNumber());
 
-  // Replace with the contract address of your smart contract
-  const cidEmitterContractAddr = process.env.CID_EMITTER_CONTRACT_ADDR;
-  const contract = new web3.eth.Contract(contractABI, cidEmitterContractAddr);
+  const jsonFile = "../contracts/out/CIDEmitter.sol/CIDEmitter.json";
+  const parsed = JSON.parse(fs.readFileSync(jsonFile));
+  const contractABI = parsed.abi;
+
+  const contract = new ethers.Contract(process.env.CID_EMITTER_CONTRACT_ADDR, contractABI, provider);
 
   console.log('Listening for new event CIDToPIN ...');
 
-  // Check if the contract object is defined
-  if (!contract) {
-    console.log('Contract object is undefined. Make sure the contract address and ABI are correct.');
-  } else {
-    // Listen for the 'CIDToPIN' event
-    contract.events.CIDToPIN({}, (error, event) => {
-      if (error) {
-        console.error('Error:', error);
-      } else {
-        console.log('New task created:', event.returnValues._task);
-      }
-    })
-    .on("connected", () => {
-      console.log("Connected to rpc provider at:" + process.env.RPC_URL);
-    })
-    .on("changed", (event) => {
-      console.log(event); 
-    })
-    .on('data', function(event){
-      console.log(event); 
-    })
-    .on("error", (error) => {
-        console.error("Event error:", error);
-    });
-  } 
+  // Listen for events
+  contract.on("CIDToPIN", (arg1, arg2,  event) => {
+    console.log(`Event "${event.event}" detected:`);
+    console.log(`- arg1: ${arg1}`);
+    console.log(`- arg2: ${arg2}`);
+    // ... handle other event arguments
+  });
+  
 }
 
 

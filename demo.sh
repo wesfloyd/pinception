@@ -16,9 +16,11 @@ forge script script/CIDEmitter.s.sol:CIDEmitterScript --fork-url $RPC_URL \
 cd ..
 
 
-CID_CONTRACT_ADDRESS=0x5FbDB2315678afecb367f032d93F642f64180aa3
+CID_EMITTER_CONTRACT_ADDR=0x5FbDB2315678afecb367f032d93F642f64180aa3
 
-cast send $CID_CONTRACT_ADDRESS "emitCIDToPIN(string)" "Qm000TestHashValue1" \
+cast send $CID_EMITTER_CONTRACT_ADDR "emitCIDToPIN(string)" "Qm000TestHashValue1" \
     --private-key $PRIVATE_KEY
+
+cast --rpc-url RPC_URL chain-data 1
 
 ## todo use later  cast call $CID_CONTRACT_ADDRESS "getEmittedCIDs()"
