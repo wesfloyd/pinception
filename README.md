@@ -82,29 +82,9 @@ This allows anyone with access to the file (specifically the original pinner) to
 # Roadmap
 See Issues for ongoing sprint tracking.
 
+# Demo
 
-# Demo Setup for IPFS Daemon Method
-
-1. Install IPFS Kubo binaries locally on your machine
-- https://github.com/ipfs/kubo?tab=readme-ov-file#official-prebuilt-binaries
-- https://github.com/ipfs/kubo?tab=readme-ov-file#homebrew
-
-2. Init and start your ipfs server
-`ipfs init`
-`ipfs daemon`
-*in the future this daemon will be orchestrated to run via docker-compose, k8s, otherwise*
-
-3. Pin a file on a remote IPFS server
-Use any service you like. For example, I use google cloud console running the following commands:
-```
-ipfs daemon
-echo "Hello, IPFS! $(date +%s%N)" | ipfs add --pin=true
-```
-
-5. Open a new terminal window, run
-`node pinner-ipfsd.js`
-For now - simply modify the source file directly to hardcode the added ipfs hash.
-
-
+For now, see `demo.sh`
+Working demo video here: https://www.loom.com/share/96f95fc55c0a48bb934465e9be55b5ea
 
 

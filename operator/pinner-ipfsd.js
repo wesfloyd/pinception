@@ -2,9 +2,13 @@
  * Pinning service using local IPFS daemon
  */
 import fetch from 'node-fetch'
+import 'dotenv/config'
+import fs from 'fs'
+import { ethers } from "ethers";
+
 
 // todo encapsulate this in a global module or namespace object
-const ipfsDaemonSocket = 'http://127.0.0.1:5001';
+const ipfsDaemonSocket = process.env.IPFS_DAEMON_SOCKET;
 
 async function checkIPFSDaemonAvailable(){
 
@@ -40,6 +44,7 @@ async function checkIPFSDaemonAvailable(){
 async function addIPFSHash(hash) {
   try {
     
+    console.log('Sending IPFS pin add request for hash:', hash);
 
     // Make the POST request to the IPFS API
     const response = await fetch(ipfsDaemonSocket + 
@@ -55,54 +60,40 @@ async function addIPFSHash(hash) {
 }
 
 
+async function listenForNewCIDTask() {
 
-async function listenForNewCIDTask(){
-  const Web3 = require('web3');
-  const web3 = new Web3('https://mainnet.infura.io/v3/YOUR-PROJECT-ID');
+  const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+  
+  //console.log ("Blocknumber" + await provider.getBlockNumber());
 
-  // Replace with the ABI (Application Binary Interface) of your smart contract
-  const contractABI = [
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_task",
-          "type": "string"
-        }
-      ],
-      "name": "newTask",
-      "type": "event"
-    },
-    // Other contract functions and events
-  ];
+  const jsonFile = "../contracts/out/CIDEmitter.sol/CIDEmitter.json";
+  const parsed = JSON.parse(fs.readFileSync(jsonFile));
+  const contractABI = parsed.abi;
 
-  // Replace with the contract address of your smart contract
-  const contractAddress = '0x1234567890123456789012345678901234567890';
+  const contract = new ethers.Contract(process.env.CID_EMITTER_CONTRACT_ADDR, contractABI, provider);
 
-  const contract = new web3.eth.Contract(contractABI, contractAddress);
 
-  // Listen for the 'newTask' event
-  contract.events.newTask({}, (error, event) => {
-    if (error) {
-      console.error('Error:', error);
-    } else {
-      console.log('New task created:', event.returnValues._task);
-    }
+  console.log('Listening for new event CIDToPIN ...');
+
+  // Listen for the event
+  contract.on('CIDToPIN', (data) => {
+    console.log('CIDToPIN emitted:', data);
+    addIPFSHash(data);
   });
+
 }
 
 
-
 async function main() {
+  const myVariable = process.env.MY_VARIABLE;
 
   // Kubo API reference: ipns://docs.ipfs.tech/reference/kubo/rpc/#getting-started
-  checkIPFSDaemonAvailable();
+  //checkIPFSDaemonAvailable();
   
-  const testHash = "QmXuZ8Ge2FFoF5DWQUmwBDrdvCV3wCe9nToKRRAe2PVziQ";
-  addIPFSHash(testHash);
-
-  //listenForNewCIDTask();
-
+  // Listen for new CID and invoke addIPFSHash
+  listenForNewCIDTask();
+  
+  //addIPFSHash(cidToBePinned);
 
 }
 main()
