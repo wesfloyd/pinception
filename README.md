@@ -85,6 +85,6 @@ See Issues for ongoing sprint tracking.
 # Demo
 
 For now, see `demo.sh`
-
+Working demo video here: https://www.loom.com/share/96f95fc55c0a48bb934465e9be55b5ea
 
 
