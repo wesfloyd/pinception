@@ -44,6 +44,7 @@ async function checkIPFSDaemonAvailable(){
 async function addIPFSHash(hash) {
   try {
     
+    console.log('Sending IPFS pin add request for hash:', hash);
 
     // Make the POST request to the IPFS API
     const response = await fetch(ipfsDaemonSocket + 
@@ -71,16 +72,15 @@ async function listenForNewCIDTask() {
 
   const contract = new ethers.Contract(process.env.CID_EMITTER_CONTRACT_ADDR, contractABI, provider);
 
+
   console.log('Listening for new event CIDToPIN ...');
 
-  // Listen for events
-  contract.on("CIDToPIN", (arg1, arg2,  event) => {
-    console.log(`Event "${event.event}" detected:`);
-    console.log(`- arg1: ${arg1}`);
-    console.log(`- arg2: ${arg2}`);
-    // ... handle other event arguments
+  // Listen for the event
+  contract.on('CIDToPIN', (data) => {
+    console.log('CIDToPIN emitted:', data);
+    addIPFSHash(data);
   });
-  
+
 }
 
 
@@ -90,10 +90,10 @@ async function main() {
   // Kubo API reference: ipns://docs.ipfs.tech/reference/kubo/rpc/#getting-started
   //checkIPFSDaemonAvailable();
   
+  // Listen for new CID and invoke addIPFSHash
   listenForNewCIDTask();
-
-  //const testHash = "QmXuZ8Ge2FFoF5DWQUmwBDrdvCV3wCe9nToKRRAe2PVziQ";
-  //addIPFSHash(testHash);
+  
+  //addIPFSHash(cidToBePinned);
 
 }
 main()
