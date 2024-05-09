@@ -10,7 +10,7 @@
 # Project Goals
 - Build an AVS in the open, via community, that enables decentralized, crypto incentivized "[IPFS](ipfs.tech) Pinning as a Service" (AVS) on [EigenLayer](https://docs.eigenlayer.xyz/eigenlayer/overview). 
 - Background and inspiration [here](https://x.com/DennisonBertram/status/1772621874192584962).
-- Interested in following our progress? - join the Telegram group [here](https://t.me/+IZGuHJNzOQQwZDRh).
+- Interested in following our progress? Join the discussions [here](https://github.com/wesfloyd/pinception/discussions). Join the Telegram group [here](https://t.me/+IZGuHJNzOQQwZDRh).
 
 # Design
 
