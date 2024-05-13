@@ -62,7 +62,7 @@ async function addIPFSHash(hash) {
 
 async function listenForNewCIDTask() {
 
-  const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+  const provider = new ethers.JsonRpcProvider(process.env.ETH_RPC_SOCKET);
   
   //console.log ("Blocknumber" + await provider.getBlockNumber());
 
@@ -79,6 +79,7 @@ async function listenForNewCIDTask() {
   contract.on('CIDToPIN', (data) => {
     console.log('CIDToPIN emitted:', data);
     addIPFSHash(data);
+    
   });
 
 }
