@@ -72,7 +72,6 @@ async function listenForNewCIDTask() {
 
   const contract = new ethers.Contract(process.env.CID_EMITTER_CONTRACT_ADDR, contractABI, provider);
 
-
   console.log('Listening for new event CIDToPIN ...');
 
   // Listen for the event

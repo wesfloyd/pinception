@@ -1,0 +1,17 @@
+Listening for new event CIDToPIN ...
+CIDToPIN emitted: QmTpZJ6HohPBJLEaEWwQeqy6Yex6oS8nfdopPqvUZSj6mr
+Sending IPFS pin add request for hash: QmTpZJ6HohPBJLEaEWwQeqy6Yex6oS8nfdopPqvUZSj6mr
+IPFS hash added: {"Pins":["QmTpZJ6HohPBJLEaEWwQeqy6Yex6oS8nfdopPqvUZSj6mr"]}
+
+CIDToPIN emitted: QmcZztL757pe1RbhzhRN7aVjKR8FfGWD4yN4tYKed2VR2X
+Sending IPFS pin add request for hash: QmcZztL757pe1RbhzhRN7aVjKR8FfGWD4yN4tYKed2VR2X
+IPFS hash added: {"Pins":["QmcZztL757pe1RbhzhRN7aVjKR8FfGWD4yN4tYKed2VR2X"]}
+
+CIDToPIN emitted: QmdJMsEabcJ2xgTSgdELYtKbhC7kTwBcFkSEjvaKCv9kf3
+Sending IPFS pin add request for hash: QmdJMsEabcJ2xgTSgdELYtKbhC7kTwBcFkSEjvaKCv9kf3
+IPFS hash added: {"Pins":["QmdJMsEabcJ2xgTSgdELYtKbhC7kTwBcFkSEjvaKCv9kf3"]}
+
+CIDToPIN emitted: Qma63pNmkkU79Muhndvpi1LN7LmM1QeNyvVtft9iH3gPE8
+Sending IPFS pin add request for hash: Qma63pNmkkU79Muhndvpi1LN7LmM1QeNyvVtft9iH3gPE8
+IPFS hash added: {"Pins":["Qma63pNmkkU79Muhndvpi1LN7LmM1QeNyvVtft9iH3gPE8"]}
+

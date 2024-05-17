@@ -3,6 +3,8 @@
 ## for testing the project.
 ##
 
+# Pre-requisites
+
 ## Update your local foundry instance
 foundryup
 
@@ -34,9 +36,6 @@ ANVIL_PID=$!
     --private-key $PRIVATE_KEY --broadcast \
 )
 
-# Optional: run otterscan locally to view the chain
-docker run --rm -d -p 5100:80 --name otterscan -d otterscan/otterscan:latest
-
 # Local Setup for IPFS Daemon
 docker run --rm -d --name $IPFS_OPERATOR \
     -p 4001:4001 \
@@ -53,38 +52,17 @@ docker run --rm -d --name $IPFS_SIM_REMOTE \
 
 
 
-## Test connectivity to local kubo node
-curl -X POST ${IPFS_OPERATOR_API}/id
-curl -X POST ${IPFS_SIM_REMOTE_API}/id
-
-# Open in browser
-http://localhost:5001
-http://localhost:5002
-
-# Check the list of locally pinned files
-# ipfs pin ls
-curl -X POST ${IPFS_OPERATOR_API}/pin/ls | jq 
-curl -X POST ${IPFS_OPERATOR_API}/ls?arg=QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn
-
-# to unpin all added content
-# ipfs pin ls --type recursive | cut -d' ' -f1 | xargs -n1 ipfs pin rm
-curl -X POST $IPFS_OPERATOR_API/pin/rm?arg=QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn&recursive=true
-
-# then optionally run storage garbage collection to actually remove things:
-# ipfs repo gc
-
 # Pin a file on a remote IPFS server
-
 MSG="Hello, IPFS Today is $(date '+%Y-%m-%d') and the time is $(date '+%H:%M:%S')"
 CID1=$(curl -X POST -F file=@- "${IPFS_OPERATOR_API}/add" <<< "${MSG}" | jq -r .Hash)
 curl -X POST "${IPFS_OPERATOR_API}/pin/add?arg=${CID1}" | jq
 
 
-#Open a new terminal window, run
+# Open a second terminal window, run operator code
 ## Todo: how to remove the file path dependency for operator ?? think
 (cd ../operator && node pinner-ipfsd.js &) && PINNER_PID=$!
 
-# Open a another window to call the CID emit contract on chain
+# Open a third window to call the CID emit contract on chain
 # hard coded contract addr for now
 PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 CID_EMITTER_CONTRACT_ADDR=0x5FbDB2315678afecb367f032d93F642f64180aa3
@@ -94,8 +72,8 @@ cast send $CID_EMITTER_CONTRACT_ADDR "emitCIDToPIN(string)" "${CID1}" \
     --private-key $PRIVATE_KEY
 
 # Back on local - test that the CID was pinned
-curl -X POST $IPFS_OPERATOR_API/cat?arg=${CID1}
-curl -X POST $IPFS_SIM_REMOTE_API/cat?arg=${CID1}
+curl -X POST ${IPFS_OPERATOR_API}/cat?arg=${CID1}
+curl -X POST ${IPFS_SIM_REMOTE_API}/cat?arg=${CID1}
 
 
 
@@ -120,6 +98,36 @@ docker stop $IPFS_SIM_REMOTE
 ##############################################################################
 
 
+## Optional: run otterscan locally to view the chain
+docker run --rm -d -p 5100:80 --name otterscan -d otterscan/otterscan:latest
+
+
+
+# Test connectivity to local kubo node
+curl -X POST ${IPFS_OPERATOR_API}/id
+curl -X POST ${IPFS_SIM_REMOTE_API}/id
+
+# Open in browser
+http://localhost:5001
+http://localhost:5002
+
+## Check the list of locally pinned files
+# ipfs pin ls
+curl -X POST ${IPFS_OPERATOR_API}/pin/ls | jq 
+curl -X POST ${IPFS_OPERATOR_API}/ls?arg=QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn
+
+## to unpin all added content
+# ipfs pin ls --type recursive | cut -d' ' -f1 | xargs -n1 ipfs pin rm
+curl -X POST $IPFS_OPERATOR_API/pin/rm?arg=QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn&recursive=true
+
+## then optionally run storage garbage collection to actually remove things:
+# ipfs repo gc
+
+
+
+
+
+
 # Example to use google cloud console running the following commands:
 gcloud auth login
 gcloud init
@@ -131,10 +139,6 @@ cd kubo
 sudo bash install.sh
 ipfs --version
 ipfs daemon &
-
-
-
-
 
 
 # NOT yet WORKING

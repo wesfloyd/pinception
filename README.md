@@ -82,9 +82,12 @@ This allows anyone with access to the file (specifically the original pinner) to
 # Roadmap
 See Issues for ongoing sprint tracking.
 
-# Demo
+# Demos
 
-For now, see `demo.sh`
-Working demo video here: https://www.loom.com/share/96f95fc55c0a48bb934465e9be55b5ea
+Manual Demo: see integration-tests/demo-manual-full.sh
+- Initial demo video here: https://www.loom.com/share/96f95fc55c0a48bb934465e9be55b5ea
 
-
+Semi-Automated Demo:
+- Terminal 1: ./integration-tests/start-anvil-sandbox.sh
+- Terminal 2: ./operator/start-operator
+- Terminal 3: ./run-integration-test1.sh
