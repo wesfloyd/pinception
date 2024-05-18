@@ -1,8 +1,6 @@
 source .env
 source ../operator/.env
 
-
-
 # Simulated IPFS container to represent a rmeote IPFS server for testing
 docker run --rm -d --name $IPFS_SIM_REMOTE \
     -p 4002:4001 \

@@ -12,6 +12,21 @@
 - Background and inspiration [here](https://x.com/DennisonBertram/status/1772621874192584962).
 - Interested in following our progress? Join the discussions [here](https://github.com/wesfloyd/pinception/discussions). Join the Telegram group [here](https://t.me/+IZGuHJNzOQQwZDRh).
 
+
+# Roadmap
+See Issues for ongoing sprint tracking.
+
+# Demos
+
+Manual Demo: see integration-tests/demo-manual-full.sh
+- Initial demo video here: https://www.loom.com/share/96f95fc55c0a48bb934465e9be55b5ea
+
+Semi-Automated Demo:
+- Terminal 1: ./integration-tests/start-anvil-sandbox.sh
+- Terminal 2: ./operator/start-operator
+- Terminal 3: ./run-integration-test1.sh
+
+
 # Design
 
 ## User Stories
@@ -78,16 +93,3 @@ This allows anyone with access to the file (specifically the original pinner) to
 - Prevents node operators from cheating by merely pulling files from other nodes at the time of request.
 - Utilizes Merkle trees and proofs of storage to make it impractical for node operators to cheat.
 - Provides a verification mechanism that allows anyone to validate the availability and correctness of the pinned files.
-
-# Roadmap
-See Issues for ongoing sprint tracking.
-
-# Demos
-
-Manual Demo: see integration-tests/demo-manual-full.sh
-- Initial demo video here: https://www.loom.com/share/96f95fc55c0a48bb934465e9be55b5ea
-
-Semi-Automated Demo:
-- Terminal 1: ./integration-tests/start-anvil-sandbox.sh
-- Terminal 2: ./operator/start-operator
-- Terminal 3: ./run-integration-test1.sh
