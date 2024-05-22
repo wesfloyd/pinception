@@ -32,7 +32,7 @@ ANVIL_PID=$!
 ## cd to contracts directory so that 'forge' command works correctly
 ## deploy contract via forge
 (cd ../contracts && \
-    forge script script/CIDEmitter.s.sol:CIDEmitterScript --fork-url $ETH_RPC_SOCKET \
+    forge script script/PinceptionDeployer.s.sol:PinceptionDeployer --fork-url $ETH_RPC_SOCKET \
     --private-key $PRIVATE_KEY --broadcast \
 )
 
@@ -68,7 +68,7 @@ PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 CID_EMITTER_CONTRACT_ADDR=0x5FbDB2315678afecb367f032d93F642f64180aa3
 
 
-cast send $CID_EMITTER_CONTRACT_ADDR "emitCIDToPIN(string)" "${CID1}" \
+cast send $CID_EMITTER_CONTRACT_ADDR "createNewCIDPinTask(string)" "${CID1}" \
     --private-key $PRIVATE_KEY
 
 # Back on local - test that the CID was pinned

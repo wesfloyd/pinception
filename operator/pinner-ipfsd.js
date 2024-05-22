@@ -66,17 +66,18 @@ async function listenForNewCIDTask() {
   
   //console.log ("Blocknumber" + await provider.getBlockNumber());
 
-  const jsonFile = "../contracts/out/CIDEmitter.sol/CIDEmitter.json";
+  const jsonFile = "../contracts/out/PinceptionServiceManager.sol/PinceptionServiceManager.json";
+  
   const parsed = JSON.parse(fs.readFileSync(jsonFile));
   const contractABI = parsed.abi;
 
   const contract = new ethers.Contract(process.env.CID_EMITTER_CONTRACT_ADDR, contractABI, provider);
 
-  console.log('Listening for new event CIDToPIN ...');
+  console.log('Listening for new event NewCIDRequestTaskCreated ...');
 
   // Listen for the event
-  contract.on('CIDToPIN', (data) => {
-    console.log('CIDToPIN emitted:', data);
+  contract.on('NewCIDRequestTaskCreated', (data) => {
+    console.log('NewCIDRequestTaskCreated emitted:', data);
     addIPFSHash(data);
     
   });

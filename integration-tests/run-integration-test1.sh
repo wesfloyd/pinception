@@ -33,7 +33,7 @@ curl -X POST "${IPFS_OPERATOR_API}/pin/add?arg=${CID1}" | jq
 PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 CID_EMITTER_CONTRACT_ADDR=0x5FbDB2315678afecb367f032d93F642f64180aa3
 
-cast send $CID_EMITTER_CONTRACT_ADDR "emitCIDToPIN(string)" "${CID1}" \
+cast send $CID_EMITTER_CONTRACT_ADDR "createNewCIDPinTask(string)" "${CID1}" \
     --private-key $PRIVATE_KEY
 
 # Confirm that the CID was pinned

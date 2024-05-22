@@ -12,6 +12,6 @@ echo $! > anvil.pid
 ## cd to contracts directory so that 'forge' command works correctly
 ## deploy contract via forge
 (cd ../contracts && \
-    forge script script/CIDEmitter.s.sol:CIDEmitterScript --fork-url $ETH_RPC_SOCKET \
+    forge script script/PinceptionServiceManager.s.sol:PinceptionServiceManager --fork-url $ETH_RPC_SOCKET \
     --private-key $PRIVATE_KEY --broadcast \
 )
