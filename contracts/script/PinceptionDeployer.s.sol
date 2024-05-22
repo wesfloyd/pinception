@@ -249,46 +249,46 @@ contract PinceptionDeployer is Script, Utils {
         );
 
         // WRITE JSON DATA
-        string memory parent_object = "parent object";
+        string memory parentObject = "parent object";
 
-        string memory deployed_addresses = "addresses";
+        string memory deployedAddresses = "addresses";
         vm.serializeAddress(
-            deployed_addresses,
+            deployedAddresses,
             "erc20Mock",
             address(erc20Mock)
         );
         vm.serializeAddress(
-            deployed_addresses,
+            deployedAddresses,
             "erc20MockStrategy",
             address(erc20MockStrategy)
         );
         vm.serializeAddress(
-            deployed_addresses,
+            deployedAddresses,
             "PinceptionServiceManagerProxy",
             address(pinceptionServiceManagerProxy)
         );
         vm.serializeAddress(
-            deployed_addresses,
+            deployedAddresses,
             "pinceptionServiceManagerImplementation",
             address(pinceptionServiceManagerImplementation)
         );
         vm.serializeAddress(
-            deployed_addresses,
+            deployedAddresses,
             "ECDSAStakeRegistry",
             address(stakeRegistryProxy)
         );
         
-        string memory deployed_addresses_output = vm.serializeAddress(
-            deployed_addresses,
+        string memory deployedAddressesOutput = vm.serializeAddress(
+            deployedAddresses,
             "ECDSAStakeRegistryImplementation",
             address(stakeRegistryImplementation)
         );
 
         // serialize all the data
         string memory finalJson = vm.serializeString(
-            parent_object,
-            deployed_addresses,
-            deployed_addresses_output
+            parentObject,
+            deployedAddresses,
+            deployedAddressesOutput
         );
 
         writeOutput(finalJson, "pinception_avs_deployment_output");
