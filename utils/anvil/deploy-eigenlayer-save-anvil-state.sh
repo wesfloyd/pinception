@@ -5,7 +5,7 @@ parent_path=$(
     cd "$(dirname "${BASH_SOURCE[0]}")"
     pwd -P
 )
-# At this point we are in tests/anvil
+# At this point we are in /utils/anvil/
 cd "$parent_path"
 
 set -a
