@@ -1,3 +1,6 @@
 .DS_Store
 integration-tests/logs/*
 integration-tests/anvil.pid
+
+# Ignore node_modules directory
+node_modules/
