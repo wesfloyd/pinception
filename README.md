@@ -12,6 +12,20 @@
 - Background and inspiration [here](https://x.com/DennisonBertram/status/1772621874192584962).
 - Interested in following our progress? Join the discussions [here](https://github.com/wesfloyd/pinception/discussions).
 
+# Demo Video
+
+[Decentralize Your dApp’s Secret Off Chain Backend w/EigenLayer](https://www.youtube.com/watch?v=_rWdJZkJYVw) (End of this talk at [15m44s](https://youtu.be/_rWdJZkJYVw?si=8K0D4iworyjwnPxw&t=944))
+
+<p align="center">
+<img width="500" alt="image" src="https://github.com/wesfloyd/pinception/assets/260568/ddb8933f-515b-47b6-bc7b-4677ee1fa2aa">
+</p>
+
+# Why Pinception?
+- IPFS is great ✅
+- IPFS is p2p (w/o incentives) 🤷
+- Self-hosting an IPFS server not great 👎
+- Existing IPFS pinning services require centralized hosting infra 😬
+
 
 # Design
 
