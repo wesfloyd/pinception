@@ -4,31 +4,28 @@
 ##
 
 # Pre-requisites
-
 ## Update your local foundry instance
 foundryup
-
 ## install jq for macos
 brew install jq
 
-# Setup local test env variables
+
+
+# Terminal1: Start the anvil chain locally
+# anvil > logs/anvil.log 2>&1 &
+# ANVIL_PID=$!
+anvil
+
+
+
+
+# Terminal 2
+
+## Setup local test env variables
 source ../operator/.env
-PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
-ETH_RPC_SOCKET=http://localhost:8545
-# IPFS container for local operator
-IPFS_OPERATOR=ipfs-op1
-# IPFS container to simulate remote instance for testing purposes
-IPFS_SIM_REMOTE=ipfs-sim-remote1
-IPFS_OPERATOR_API=http://127.0.0.1:5001/api/v0
-IPFS_SIM_REMOTE_API=http://127.0.0.1:5002/api/v0
+source ./.env
 
-
-# Start the anvil chain locally
-anvil > logs/anvil.log 2>&1 &
-ANVIL_PID=$!
-
-
-## Deploy local contracts
+# Deploy local contracts
 ## cd to contracts directory so that 'forge' command works correctly
 ## deploy contract via forge
 (cd ../contracts && \
@@ -36,11 +33,13 @@ ANVIL_PID=$!
     --private-key $PRIVATE_KEY --broadcast \
 )
 
+
 # Local Setup for IPFS Daemon
 docker run --rm -d --name $IPFS_OPERATOR \
     -p 4001:4001 \
     -p 5001:5001/tcp \
     -p 4001:4001/udp \
+    -p 8080:8080 \
     ipfs/kubo:latest
 
 # Simulated IPFS container to represent a rmeote IPFS server for testing
@@ -48,43 +47,56 @@ docker run --rm -d --name $IPFS_SIM_REMOTE \
     -p 4002:4001 \
     -p 5002:5001/tcp \
     -p 4002:4001/udp \
+    -p 8081:8080 \
     ipfs/kubo:latest
 
+# Run the operator binary
+# (cd ../operator && node pinner-ipfsd.js &) && PINNER_PID=$!
+(cd ../operator && node pinner-ipfsd.js )
 
 
-# Pin a file on a remote IPFS server
-MSG="Hello, IPFS Today is $(date '+%Y-%m-%d') and the time is $(date '+%H:%M:%S')"
-CID1=$(curl -X POST -F file=@- "${IPFS_OPERATOR_API}/add" <<< "${MSG}" | jq -r .Hash)
-curl -X POST "${IPFS_OPERATOR_API}/pin/add?arg=${CID1}" | jq
 
 
-# Open a second terminal window, run operator code
-## Todo: how to remove the file path dependency for operator ?? think
-(cd ../operator && node pinner-ipfsd.js &) && PINNER_PID=$!
 
-# Open a third window to call the CID emit contract on chain
-# hard coded contract addr for now
-PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
-CID_EMITTER_CONTRACT_ADDR=0x5FbDB2315678afecb367f032d93F642f64180aa3
+# Open a third window 
+## Setup local test env variables
+source ../operator/.env
+source ./.env
 
 
+# Pin a file on a (pretend) remote IPFS server
+MSG="Hello, IPFS Today is $(date '+%Y-%m-%d') and the time is $(date '+%H:%M:%S') .. and Prague is amazing"
+echo $MSG
+# Add file to remote IPFS server
+CID1=$(curl -X POST -F file=@- "${IPFS_SIM_REMOTE_API}/add" <<< "${MSG}" | jq -r .Hash)
+# Pin the CID
+curl -X POST "${IPFS_SIM_REMOTE_API}/pin/add?arg=${CID1}" | jq
+
+## Check the list of simulated remote pinned files
+curl -X POST ${IPFS_SIM_REMOTE_API}/pin/ls | jq 
+
+## Cat the contents of the CID
+curl -X POST ${IPFS_SIM_REMOTE_API}/cat?arg=${CID1}
+
+## Check the list of pinned files on the local operator
+curl -X POST ${IPFS_OPERATOR_API}/pin/ls | jq
+
+
+
+# Call the CID emit contract on chain
 cast send $CID_EMITTER_CONTRACT_ADDR "emitCIDToPIN(string)" "${CID1}" \
     --private-key $PRIVATE_KEY
 
-# Back on local - test that the CID was pinned
-curl -X POST ${IPFS_OPERATOR_API}/cat?arg=${CID1}
-curl -X POST ${IPFS_SIM_REMOTE_API}/cat?arg=${CID1}
+
+## Check the list of locally pinned files
+curl -X POST ${IPFS_OPERATOR_API}/pin/ls | jq 
+## Check the lis of simulated remote pinned files
+curl -X POST ${IPFS_SIM_REMOTE_API}/pin/ls | jq 
 
 
-
-
-## Stop everything
-
-# Stop anvil locally
-kill $ANVIL_PID
-kill $PINNER_PID
-
-## Additional testing utilities available as needed
+# Stop everything
+# kill $ANVIL_PID
+# kill $PINNER_PID
 docker stop $IPFS_OPERATOR
 docker stop $IPFS_SIM_REMOTE
 
@@ -107,14 +119,7 @@ docker run --rm -d -p 5100:80 --name otterscan -d otterscan/otterscan:latest
 curl -X POST ${IPFS_OPERATOR_API}/id
 curl -X POST ${IPFS_SIM_REMOTE_API}/id
 
-# Open in browser
-http://localhost:5001
-http://localhost:5002
 
-## Check the list of locally pinned files
-# ipfs pin ls
-curl -X POST ${IPFS_OPERATOR_API}/pin/ls | jq 
-curl -X POST ${IPFS_OPERATOR_API}/ls?arg=QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn
 
 ## to unpin all added content
 # ipfs pin ls --type recursive | cut -d' ' -f1 | xargs -n1 ipfs pin rm
