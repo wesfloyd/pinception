@@ -65,7 +65,7 @@ source ./.env
 
 
 # Pin a file on a (pretend) remote IPFS server
-MSG="Hello, IPFS Today is $(date '+%Y-%m-%d') and the time is $(date '+%H:%M:%S') .. and Prague is amazing"
+MSG="Hello, IPFS Today is $(date '+%Y-%m-%d') and the time is $(date '+%H:%M:%S') .. and Nashville is amazing"
 echo $MSG
 # Add file to remote IPFS server
 CID1=$(curl -X POST -F file=@- "${IPFS_SIM_REMOTE_API}/add" <<< "${MSG}" | jq -r .Hash)
@@ -75,8 +75,6 @@ curl -X POST "${IPFS_SIM_REMOTE_API}/pin/add?arg=${CID1}" | jq
 ## Check the list of simulated remote pinned files
 curl -X POST ${IPFS_SIM_REMOTE_API}/pin/ls | jq 
 
-## Cat the contents of the CID
-curl -X POST ${IPFS_SIM_REMOTE_API}/cat?arg=${CID1}
 
 ## Check the list of pinned files on the local operator
 curl -X POST ${IPFS_OPERATOR_API}/pin/ls | jq
