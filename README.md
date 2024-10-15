@@ -8,7 +8,8 @@
 <h3 align="center">Decentralized IPFS Pinning Service Built on EigenLayer</h2>
 
 # Project Goals
-- Build an AVS in the open, via community, that enables decentralized, crypto incentivized "[IPFS](ipfs.tech) Pinning as a Service" (AVS) on [EigenLayer](https://docs.eigenlayer.xyz/eigenlayer/overview). 
+- Build a reference architecture AVS based on Hello World AVS.
+- Build in the open, via community, and enable decentralized, crypto incentivized "[IPFS](ipfs.tech) Pinning as a Service" (AVS) on [EigenLayer](https://docs.eigenlayer.xyz/eigenlayer/overview). 
 - Background and inspiration [here](https://x.com/DennisonBertram/status/1772621874192584962).
 - Interested in roadmap and following our progress? Join the discussions [here](https://github.com/wesfloyd/pinception/discussions).
 
@@ -16,9 +17,9 @@
 
 [Decentralize Your dApp’s Secret Off Chain Backend w/EigenLayer](https://www.youtube.com/watch?v=_rWdJZkJYVw) (End of this talk at [15m44s](https://youtu.be/_rWdJZkJYVw?si=8K0D4iworyjwnPxw&t=944))
 
-<p align="center">
-<img width="500" alt="image" src="assets/pinception-architecture.png">
-</p>
+<p><img width="400" alt="image" src="assets/pinception-architecture.png"></p>
+<a href="https://link.excalidraw.com/l/1XPZRMVbRNH/Ai6Tz8fAVsw">Excalidraw available here</a>.
+
 
 # Why Pinception?
 - IPFS is great ✅
@@ -28,17 +29,7 @@
 
 
 
-# Roadmap
-See Discussion for ongoing sprint tracking.
 
-# Demos
-
-Manual Demo: see integration-tests/demo-manual-full.sh
-
-Semi-Automated Demo:
-- Terminal 1: ./integration-tests/start-anvil-sandbox.sh
-- Terminal 2: ./operator/start-operator
-- Terminal 3: ./run-integration-test1.sh
 
 
 # Local Devnet Deployment
@@ -87,8 +78,9 @@ npm run deploy:core
 # Deploy the Hello World AVS contracts
 npm run deploy:hello-world
 
-# (Optional) Update ABIs
-npm run extract:abis
+# IPFS container for local operator
+IPFS_OPERATOR=ipfs-op1
+IPFS_OPERATOR_API=http://127.0.0.1:5001/api/v0
 
 # Start the Operator application
 npm run start:operator
@@ -100,6 +92,62 @@ npm run start:operator
 Open a separate terminal window #3, execute the following commands
 
 ```sh
-# Start the createNewTasks application 
-npm run start:traffic
+
+# IPFS container to simulate remote instance for testing purposes
+IPFS_SIM_REMOTE=ipfs-sim-remote1
+IPFS_SIM_REMOTE_API=http://127.0.0.1:5002/api/v0
+
+
+
+# Simulated IPFS container to represent a remote IPFS server for testing
+docker run --rm -d --name $IPFS_SIM_REMOTE \
+    -p 4002:4001 \
+    -p 5002:5001/tcp \
+    -p 4002:4001/udp \
+    -p 8081:8080 \
+    ipfs/kubo:latest
+
+
+# Pin a file on a (pretend) remote IPFS server
+MSG="Hello, IPFS Today is $(date '+%Y-%m-%d') and the time is $(date '+%H:%M:%S') .. and Nashville is amazing"
+echo $MSG
+# Add file to remote IPFS server
+CID1=$(curl -X POST -F file=@- "${IPFS_SIM_REMOTE_API}/add" <<< "${MSG}" | jq -r .Hash)
+# Pin the CID
+curl -X POST "${IPFS_SIM_REMOTE_API}/pin/add?arg=${CID1}" | jq
+
+## Check the list of simulated remote pinned files
+curl -X POST ${IPFS_SIM_REMOTE_API}/pin/ls | jq 
+
+
+## Check the list of pinned files on the local operator
+curl -X POST ${IPFS_OPERATOR_API}/pin/ls | jq
+
+
+
+# Call the CID emit contract on chain
+cast send $CID_EMITTER_CONTRACT_ADDR "emitCIDToPIN(string)" "${CID1}" \
+    --private-key $PRIVATE_KEY
+
+
+## Check the list of locally pinned files
+curl -X POST ${IPFS_OPERATOR_API}/pin/ls | jq 
+## Check the lis of simulated remote pinned files
+curl -X POST ${IPFS_SIM_REMOTE_API}/pin/ls | jq 
+
+
+
+
 ```
+
+
+
+
+# Old Demos
+
+Manual Demo: see integration-tests/demo-manual-full.sh
+
+Semi-Automated Demo:
+- Terminal 1: ./integration-tests/start-anvil-sandbox.sh
+- Terminal 2: ./operator/start-operator
+- Terminal 3: ./run-integration-test1.sh
