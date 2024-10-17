@@ -144,6 +144,8 @@ cast send $AVS_CONTRACT_ADDR "createNewTask(string)" "${CID1}" \
 ## Check the list of locally pinned files
 curl -X POST ${IPFS_OPERATOR_API}/pin/ls | jq 
 ## Check the lis of simulated remote pinned files
-curl -X POST ${IPFS_SIM_REMOTE_API}/pin/ls | jq 
+curl -X POST ${IPFS_SIM_REMOTE_API}/pin/ls | jq
+
+
 ```
 

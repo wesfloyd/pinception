@@ -187,7 +187,7 @@ async function checkIPFSDaemonAvailable() {
         })
         .then(data => {
             // Handle the parsed JSON data
-            console.log(data);
+            // console.log(data);
             // You can perform any further operations with the data here
         })
         .catch(error => {
