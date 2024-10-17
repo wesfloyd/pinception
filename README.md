@@ -8,17 +8,18 @@
 <h3 align="center">Decentralized IPFS Pinning Service Built on EigenLayer</h2>
 
 # Project Goals
-- Build an AVS in the open, via community, that enables decentralized, crypto incentivized "[IPFS](ipfs.tech) Pinning as a Service" (AVS) on [EigenLayer](https://docs.eigenlayer.xyz/eigenlayer/overview). 
+- Build a reference architecture AVS based on Hello World AVS.
+- Build in the open, via community, and enable decentralized, crypto incentivized "[IPFS](ipfs.tech) Pinning as a Service" (AVS) on [EigenLayer](https://docs.eigenlayer.xyz/eigenlayer/overview). 
 - Background and inspiration [here](https://x.com/DennisonBertram/status/1772621874192584962).
-- Interested in following our progress? Join the discussions [here](https://github.com/wesfloyd/pinception/discussions).
+- Interested in roadmap and following our progress? Join the discussions [here](https://github.com/wesfloyd/pinception/discussions).
 
 # Demo Video
 
 [Decentralize Your dApp’s Secret Off Chain Backend w/EigenLayer](https://www.youtube.com/watch?v=_rWdJZkJYVw) (End of this talk at [15m44s](https://youtu.be/_rWdJZkJYVw?si=8K0D4iworyjwnPxw&t=944))
 
-<p align="center">
-<img width="500" alt="image" src="https://github.com/wesfloyd/pinception/assets/260568/ddb8933f-515b-47b6-bc7b-4677ee1fa2aa">
-</p>
+<p><img width="400" alt="image" src="assets/pinception-architecture.png"></p>
+<a href="https://link.excalidraw.com/l/1XPZRMVbRNH/Ai6Tz8fAVsw">Excalidraw available here</a>.
+
 
 # Why Pinception?
 - IPFS is great ✅
@@ -27,82 +28,124 @@
 - Existing IPFS pinning services require centralized hosting infra 😬
 
 
-# Design
-
-## User Stories
-
-Story 0) Operator Registration
-- Operator registers their IPFS address and [IPFS peerID](ipns://docs.ipfs.tech/concepts/dht/#kademlia) to their Operator Address in EigenLayer registry contracts.
-
-Story 1) Data Submission:
-- User submits an [IPFS hash (CID)](docs.ipfs.tech/concepts/content-addressing) to an AVS contract along with a payment.
-  - Payment amount dictates the duration of data storage and delivery.
-- All AVS nodes are expected host the IPFS Content within a specified amount of time and then deliver the content to any request in the IPFS network.
-
-Story 2) Daily Proving of Data:
-- (Note: there are many, many, many potential solutions to this problem. For now, we're starting with an example high level, simplest route to achieving these goals)
-- At a regular interval (eg daily) a randomized group of nodes are chosen to be act as a "retrievability" proving committee. The committee will choose a subset of CIDs to confirm retrievablity.
-  - The committee will attempt to connect to each IPFS server, downloaded the file, and verify it matches the CID.
-  - Eg ipfs swarm connect `ipfs swarm connect /ip4/<server_ip_address>/tcp/4001/ipfs/<peer_id>` , `ipfs get <ipfs_file_hash>`
-- Committee updates the AVS contracts with the peerID, CID and success or failure of the download operation.
-
-Story 3) Payments and Slashing conditions:
-- Payments: each time interval - payments are sent to the IPFS servers listed as hosting a given CID
-- Slashing: any IPFS server whom the committee records 66% failure for a given CID gets [some very small penalty, tbd, potentially slashed a small amount of their stake].
-
-## Architecture
-
-Ideas:
-- Build the backend AVS code in Javascript in order to appeal to the largest audience possible.
-- Reuse existing IPFS bits where possible ([example](https://github.com/ipfs/kubo?tab=readme-ov-file#docker)).
-
-## Proposed Simplified Design
-This system provides a decentralized solution for IPFS pinning and ensures that node operators are genuinely hosting the pinned files. It utilizes smart contracts, Merkle trees, and a verification process to prove the availability and integrity of the data.
-
-### Diagram
-<img width="847" alt="Screenshot 2024-04-05 at 4 29 47 PM" src="https://github.com/wesfloyd/pinception/assets/1938013/ac89fc78-7660-4fb3-a7ef-6fb5e712ea34">
 
 
-### Pinning a File
-- A user pins a file by providing the following information to a smart contract:
-`CID`: The IPFS hash of the file.
-`Merkle Root`: The Merkle root of the file, split into chunks, with each chunk hashed against the signer's public key.
-`Payment`: A fee for the pinning service.
 
-- The smart contract emits an event containing this data, making it available for the AVS (Availability Verification System) network to index.
 
-### Committee Verification
-- A randomly chosen committee verifies the file's availability to prevent griefing attacks.
-- The committee pulls the file, splits it into chunks, hashes each chunk with the pinner's public key, creates a Merkle tree, and compares the root with the one provided by the pinner.
-- Each committee member then hashes the chunks with their own unique public key, creates a Merkle tree, and puts a signed message on-chain with their unique Merkle root.
-This allows anyone with access to the file (specifically the original pinner) to verify that the AVS network has successfully reached and replicated the file and verified its contents.
+# Local Devnet Deployment
 
-### Proof of Storage
-- At intervals, the network randomly chooses a subset of the AVS network participants to prove they are hosting the data.
-- The selected participants are asked to provide a Merkle root of a tree of chunks from multiple randomly selected files.
-- For each file, a random chunk is requested. The node operator collects the randomly selected chunks, hashes each chunk with their public key, creates a Merkle trie, and posts the Merkle root on-chain.
-- Other participants can verify the correctness of the posted Merkle root by performing the calculation themselves and comparing it with the original files' Merkle roots when published on-chain by the pinners.
-- If the Merkle root is incorrect, it can be proven on-chain by working backwards from the original files' Merkle roots and comparing the chunks.
 
-### File Retrieval
-- The process of requesting a file should also include the proving system.(maybe?) 
-- This ensures that the node operators are genuinely hosting the data and not just pulling it from other nodes at the time of request.
+The following instructions explain how to manually deploy the AVS from scratch including EigenLayer and AVS specific contracts using Foundry (forge) to a local anvil chain, and start Typescript Operator application and tasks.
 
-### Benefits
-- Ensures the availability and integrity of pinned files in a decentralized manner.
-- Prevents node operators from cheating by merely pulling files from other nodes at the time of request.
-- Utilizes Merkle trees and proofs of storage to make it impractical for node operators to cheat.
-- Provides a verification mechanism that allows anyone to validate the availability and correctness of the pinned files.
+Install dependencies:
 
-# Roadmap
-See Issues for ongoing sprint tracking.
+- [Node](https://nodejs.org/en/download/)
+- [Typescript](https://www.typescriptlang.org/download)
+- [ts-node](https://www.npmjs.com/package/ts-node)
+- [tcs](https://www.npmjs.com/package/tcs#installation)
+- [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+- [Foundry](https://getfoundry.sh/)
+- [ethers](https://www.npmjs.com/package/ethers)
 
-# Demos
+### Start Anvil Chain
 
-Manual Demo: see integration-tests/demo-manual-full.sh
-- Initial demo video here: https://www.loom.com/share/96f95fc55c0a48bb934465e9be55b5ea
+In terminal window #1, execute the following commands:
 
-Semi-Automated Demo:
-- Terminal 1: ./integration-tests/start-anvil-sandbox.sh
-- Terminal 2: ./operator/start-operator
-- Terminal 3: ./run-integration-test1.sh
+```sh
+
+# Install npm packages
+npm install
+
+# Start local anvil chain
+npm run start:anvil
+```
+
+### Deploy Contracts and Start Operator
+
+Open a separate terminal window #2, execute the following commands
+
+```sh
+# Setup .env file
+cp .env.example .env
+cp contracts/.env.example contracts/.env
+
+# pinceptionSpecific Step
+source .env
+
+# Updates dependencies if necessary and builds the contracts 
+npm run build
+
+# Deploy the EigenLayer contracts
+npm run deploy:core
+
+# Deploy the Hello World AVS contracts
+npm run deploy:hello-world
+
+### pinceptionSpecific Steps START
+
+# Note: Start local docker daemon
+# eg on mac: 
+open /Applications/Docker.app
+
+# Start Local IPFS Container
+docker run --rm -d --name $IPFS_OPERATOR_NAME \
+    -p 4001:4001 \
+    -p 5001:5001/tcp \
+    -p 4001:4001/udp \
+    ipfs/kubo:latest
+
+### pinceptionSpecific Steps END
+
+# Start the Operator application
+npm run start:operator
+
+```
+
+### Create Hello-World-AVS Tasks
+
+Open a separate terminal window #3, execute the following commands
+
+```sh
+
+source .env
+
+# Simulated IPFS container to simulate a remote (separate) IPFS server for testing
+docker run --rm -d --name $IPFS_SIM_REMOTE \
+    -p 4002:4001 \
+    -p 5002:5001/tcp \
+    -p 4002:4001/udp \
+    -p 8081:8080 \
+    ipfs/kubo:latest
+
+
+# Pin a file on a simulated remote IPFS server
+MSG="Hello, IPFS Today is $(date '+%Y-%m-%d') and the time is $(date '+%H:%M:%S') .. and Nashville is amazing"
+echo $MSG
+# Add file to simulated remote IPFS server
+CID1=$(curl -X POST -F file=@- "${IPFS_SIM_REMOTE_API}/add" <<< "${MSG}" | jq -r .Hash)
+# Pin the CID
+curl -X POST "${IPFS_SIM_REMOTE_API}/pin/add?arg=${CID1}" | jq
+
+## Check the list of simulated remote pinned files
+curl -X POST ${IPFS_SIM_REMOTE_API}/pin/ls | jq 
+
+
+## Check the list of pinned files on the local operator
+curl -X POST ${IPFS_OPERATOR_API}/pin/ls | jq
+
+
+
+AVS_CONTRACT_ADDR=$(jq -r '.addresses.helloWorldServiceManager' contracts/deployments/hello-world/31337.json)
+# Call the CID emit contract on chain
+cast send $AVS_CONTRACT_ADDR "createNewTask(string)" "${CID1}" \
+    --private-key $PRIVATE_KEY
+
+
+## Check the list of locally pinned files
+curl -X POST ${IPFS_OPERATOR_API}/pin/ls | jq 
+## Check the lis of simulated remote pinned files
+curl -X POST ${IPFS_SIM_REMOTE_API}/pin/ls | jq
+
+
+```
+
