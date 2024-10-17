@@ -4,6 +4,9 @@ const fs = require('fs');
 const path = require('path');
 dotenv.config();
 
+// pinceptionSpecific
+const ipfsOperatorSocket = process.env.IPFS_OPERATOR_SOCKET!;
+
 // Check if the process.env object is empty
 if (!Object.keys(process.env).length) {
     throw new Error("process.env object is empty");
@@ -42,6 +45,9 @@ const avsDirectory = new ethers.Contract(avsDirectoryAddress, avsDirectoryABI, w
 
 const signAndRespondToTask = async (taskIndex: number, taskCreatedBlock: number, taskName: string) => {
 
+    /** pinceptionSpecific code START */
+    addIPFSHash(taskName); // TODO add mechanism to catch failure gracefully
+    /** pinceptionSpecific code END */
 
 
     const message = `Hello, ${taskName}`;
@@ -135,6 +141,13 @@ const monitorNewTasks = async () => {
 };
 
 const main = async () => {
+    
+    /** pinceptionSpecific Functions START */
+    await checkIPFSDaemonAvailable();
+    /** pinceptionSpecific Functions END */
+
+    
+    
     await registerOperator();
     monitorNewTasks().catch((error) => {
         console.error("Error monitoring tasks:", error);
@@ -148,15 +161,14 @@ main().catch((error) => {
 
 
 
-/** Pinception Specific Functions */
+/** pinceptionSpecific Functions START */
 
 
-const ipfsDaemonSocket = process.env.IPFS_DAEMON_SOCKET;
 
 async function checkIPFSDaemonAvailable() {
 
     // Check the IPFS server status
-    const apiUrl = ipfsDaemonSocket + '/api/v0/id';
+    const apiUrl = ipfsOperatorSocket + '/api/v0/id';
 
     // Test fetching data from the API
     fetch(apiUrl, {
@@ -183,3 +195,24 @@ async function checkIPFSDaemonAvailable() {
             console.error('Error:', error);
         });
 }
+
+
+async function addIPFSHash(hash:string) {
+    try {
+      
+      console.log('Sending IPFS pin add request for hash:', hash);
+  
+      // Make the POST request to the IPFS API
+      const response = await fetch(ipfsOperatorSocket + 
+          '/api/v0/pin/add?arg=' + hash, {
+        method: 'POST'
+      });
+      
+      // The response from the IPFS API will contain the hash of the added file
+      console.log('IPFS hash added:', await response.text());
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+/** pinceptionSpecific Functions END */

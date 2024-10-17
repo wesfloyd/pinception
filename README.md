@@ -69,6 +69,9 @@ Open a separate terminal window #2, execute the following commands
 cp .env.example .env
 cp contracts/.env.example contracts/.env
 
+# pinceptionSpecific Step
+source .env
+
 # Updates dependencies if necessary and builds the contracts 
 npm run build
 
@@ -78,10 +81,20 @@ npm run deploy:core
 # Deploy the Hello World AVS contracts
 npm run deploy:hello-world
 
-# IPFS container for local operator
-IPFS_OPERATOR=ipfs-op1
-IPFS_OPERATOR_API=http://127.0.0.1:5001/api/v0
-IPFS_DAEMON_SOCKET
+### pinceptionSpecific Steps START
+
+# Note: Start local docker daemon
+# eg on mac: 
+open /Applications/Docker.app
+
+# Start Local IPFS Container
+docker run --rm -d --name $IPFS_OPERATOR_NAME \
+    -p 4001:4001 \
+    -p 5001:5001/tcp \
+    -p 4001:4001/udp \
+    ipfs/kubo:latest
+
+### pinceptionSpecific Steps END
 
 # Start the Operator application
 npm run start:operator
@@ -94,13 +107,9 @@ Open a separate terminal window #3, execute the following commands
 
 ```sh
 
-# IPFS container to simulate remote instance for testing purposes
-IPFS_SIM_REMOTE=ipfs-sim-remote1
-IPFS_SIM_REMOTE_API=http://127.0.0.1:5002/api/v0
+source .env
 
-
-
-# Simulated IPFS container to represent a remote IPFS server for testing
+# Simulated IPFS container to simulate a remote (separate) IPFS server for testing
 docker run --rm -d --name $IPFS_SIM_REMOTE \
     -p 4002:4001 \
     -p 5002:5001/tcp \
@@ -109,10 +118,10 @@ docker run --rm -d --name $IPFS_SIM_REMOTE \
     ipfs/kubo:latest
 
 
-# Pin a file on a (pretend) remote IPFS server
+# Pin a file on a simulated remote IPFS server
 MSG="Hello, IPFS Today is $(date '+%Y-%m-%d') and the time is $(date '+%H:%M:%S') .. and Nashville is amazing"
 echo $MSG
-# Add file to remote IPFS server
+# Add file to simulated remote IPFS server
 CID1=$(curl -X POST -F file=@- "${IPFS_SIM_REMOTE_API}/add" <<< "${MSG}" | jq -r .Hash)
 # Pin the CID
 curl -X POST "${IPFS_SIM_REMOTE_API}/pin/add?arg=${CID1}" | jq
@@ -126,8 +135,9 @@ curl -X POST ${IPFS_OPERATOR_API}/pin/ls | jq
 
 
 
+AVS_CONTRACT_ADDR=$(jq -r '.addresses.helloWorldServiceManager' contracts/deployments/hello-world/31337.json)
 # Call the CID emit contract on chain
-cast send $CID_EMITTER_CONTRACT_ADDR "emitCIDToPIN(string)" "${CID1}" \
+cast send $AVS_CONTRACT_ADDR "createNewTask(string)" "${CID1}" \
     --private-key $PRIVATE_KEY
 
 
@@ -135,20 +145,5 @@ cast send $CID_EMITTER_CONTRACT_ADDR "emitCIDToPIN(string)" "${CID1}" \
 curl -X POST ${IPFS_OPERATOR_API}/pin/ls | jq 
 ## Check the lis of simulated remote pinned files
 curl -X POST ${IPFS_SIM_REMOTE_API}/pin/ls | jq 
-
-
-
-
 ```
 
-
-
-
-# Old Demos
-
-Manual Demo: see integration-tests/demo-manual-full.sh
-
-Semi-Automated Demo:
-- Terminal 1: ./integration-tests/start-anvil-sandbox.sh
-- Terminal 2: ./operator/start-operator
-- Terminal 3: ./run-integration-test1.sh
