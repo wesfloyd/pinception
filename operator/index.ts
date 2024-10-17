@@ -41,6 +41,9 @@ const avsDirectory = new ethers.Contract(avsDirectoryAddress, avsDirectoryABI, w
 
 
 const signAndRespondToTask = async (taskIndex: number, taskCreatedBlock: number, taskName: string) => {
+
+
+
     const message = `Hello, ${taskName}`;
     const messageHash = ethers.solidityPackedKeccak256(["string"], [message]);
     const messageBytes = ethers.getBytes(messageHash);
@@ -65,7 +68,7 @@ const signAndRespondToTask = async (taskIndex: number, taskCreatedBlock: number,
 };
 
 const registerOperator = async () => {
-    
+
     // Registers as an Operator in EigenLayer.
     try {
         const tx1 = await delegationManager.registerAsOperator({
@@ -78,7 +81,7 @@ const registerOperator = async () => {
     } catch (error) {
         console.error("Error in registering as operator:", error);
     }
-    
+
     const salt = ethers.hexlify(ethers.randomBytes(32));
     const expiry = Math.floor(Date.now() / 1000) + 3600; // Example expiry, 1 hour from now
 
@@ -91,13 +94,13 @@ const registerOperator = async () => {
 
     // Calculate the digest hash, which is a unique value representing the operator, avs, unique value (salt) and expiration date.
     const operatorDigestHash = await avsDirectory.calculateOperatorAVSRegistrationDigestHash(
-        wallet.address, 
-        await helloWorldServiceManager.getAddress(), 
-        salt, 
+        wallet.address,
+        await helloWorldServiceManager.getAddress(),
+        salt,
         expiry
     );
     console.log(operatorDigestHash);
-    
+
     // Sign the digest hash with the operator's private key
     console.log("Signing digest hash with operator's private key");
     const operatorSigningKey = new ethers.SigningKey(process.env.PRIVATE_KEY!);
@@ -108,7 +111,7 @@ const registerOperator = async () => {
 
     console.log("Registering Operator to AVS Registry contract");
 
-    
+
     // Register Operator to AVS
     // Per release here: https://github.com/Layr-Labs/eigenlayer-middleware/blob/v0.2.1-mainnet-rewards/src/unaudited/ECDSAStakeRegistry.sol#L49
     const tx2 = await ecdsaRegistryContract.registerOperatorWithSignature(
@@ -141,3 +144,42 @@ const main = async () => {
 main().catch((error) => {
     console.error("Error in main function:", error);
 });
+
+
+
+
+/** Pinception Specific Functions */
+
+
+const ipfsDaemonSocket = process.env.IPFS_DAEMON_SOCKET;
+
+async function checkIPFSDaemonAvailable() {
+
+    // Check the IPFS server status
+    const apiUrl = ipfsDaemonSocket + '/api/v0/id';
+
+    // Test fetching data from the API
+    fetch(apiUrl, {
+        method: 'POST'
+    })
+        .then(response => {
+            // Check if the response is successful
+            if (response.ok) {
+                // Parse the response as JSON
+                // return response.json();
+                console.log("Local IPFS daemon is running.");
+            } else {
+                // Throw an error if the response is not successful
+                throw new Error('Failed to fetch data. \n Response status: ' + response.status + ' ' + response.statusText);
+            }
+        })
+        .then(data => {
+            // Handle the parsed JSON data
+            console.log(data);
+            // You can perform any further operations with the data here
+        })
+        .catch(error => {
+            // Handle any errors that occurred during the fetch operation
+            console.error('Error:', error);
+        });
+}

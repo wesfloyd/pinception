@@ -81,6 +81,7 @@ npm run deploy:hello-world
 # IPFS container for local operator
 IPFS_OPERATOR=ipfs-op1
 IPFS_OPERATOR_API=http://127.0.0.1:5001/api/v0
+IPFS_DAEMON_SOCKET
 
 # Start the Operator application
 npm run start:operator
