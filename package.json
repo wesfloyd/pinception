@@ -1,5 +1,5 @@
 {
-  "name": "hello-world-avs",
+  "name": "pinception",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,6 @@
   },
   "devDependencies": {
     "@types/node": "^20.12.12",
-    "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   }
 }
